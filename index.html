@@ -86,7 +86,7 @@
         <!-- Date du jour -->
         <div class="section">
             <label for="date">Date du jour :</label>
-            <input type="date" id="date" name="date">
+            <input type="text" id="date" name="date" readonly>
         </div>
 
         <!-- Âge -->
@@ -107,7 +107,7 @@
 
         <!-- Justification Pilulier -->
         <div class="section">
-            <h3>1. Justification de la mise en place d’un pilulier :</h3>
+            <h3>1. Justification de la mise en place d'un pilulier :</h3>
             <label><input type="checkbox" id="problemes_cognitifs" name="justification" value="Problèmes cognitifs"> Problèmes cognitifs</label>
             <input type="text" id="details_problemes_cognitifs" name="details_problemes_cognitifs" placeholder="Précisez">
 
@@ -266,139 +266,9 @@
     </form>
 
     <script>
-        function updateLabResults() {
-            const labResults = document.getElementById('lab-results');
-            labResults.innerHTML = '';
-
-            if (document.getElementById('antihypertenseurs').checked) {
-                labResults.innerHTML += '<label for="sodium_potassium">Sodium et Potassium :</label><input type="text" id="sodium_potassium" name="sodium_potassium"><br>';
-            }
-            if (document.getElementById('antidiabetiques').checked) {
-                labResults.innerHTML += '<label for="hba1c">HbA1c :</label><input type="text" id="hba1c" name="hba1c"><br>';
-                labResults.innerHTML += '<label for="vitamine_b12">Vitamine B12 :</label><input type="text" id="vitamine_b12" name="vitamine_b12"><br>';
-            }
-            if (document.getElementById('antidepresseurs').checked) {
-                labResults.innerHTML += '<label for="sodium">Sodium :</label><input type="text" id="sodium" name="sodium"><br>';
-            }
-            if (document.getElementById('anticoagulants').checked) {
-                // Pas de laboratoires spécifiques
-            }
-            if (document.getElementById('antiinflammatoires').checked) {
-                // Pas de laboratoires spécifiques
-            }
-            if (document.getElementById('hormones').checked) {
-                // Pas de laboratoires spécifiques
-            }
-            if (document.getElementById('dyslipidemie').checked) {
-                labResults.innerHTML += '<label for="ldl">LDL :</label><input type="text" id="ldl" name="ldl"><br>';
-                labResults.innerHTML += '<label for="apo_b">Apo-B :</label><input type="text" id="apo_b" name="apo_b"><br>';
-            }
-            if (document.getElementById('ipp').checked) {
-                labResults.innerHTML += '<label for="magnesium">Magnésium :</label><input type="text" id="magnesium" name="magnesium"><br>';
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('form').reset();
-            document.getElementById('lab-results').innerHTML = '';
-            document.getElementById('gfr').value = '';
-        }
-
-        function exportToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let yOffset = 10;
-
-            doc.setFontSize(16);
-            doc.text("Questionnaire de Révision de Pilulier en Pharmacie", 20, yOffset);
-            doc.setFontSize(12);
-            yOffset += 10;
-
-            const addText = (text) => {
-                if (yOffset >= 280) {
-                    doc.addPage();
-                    yOffset = 10;
-                }
-                doc.text(text, 20, yOffset);
-                yOffset += 10;
-            };
-
-            // Remplissage des informations
-            addText("Date du jour: " + document.getElementById('date').value);
-            addText("Âge: " + document.getElementById('age').value);
-            addText("Risque selon l'approche Vigie: " + document.getElementById('risque_vigie').value);
-            
-            // Justifications
-            addText("Justifications de la mise en place d’un pilulier:");
-            const justifications = [
-                "Problèmes cognitifs: " + (document.getElementById('problemes_cognitifs').checked ? "Oui" : "Non") + 
-                (document.getElementById('details_problemes_cognitifs').value ? ", Détails: " + document.getElementById('details_problemes_cognitifs').value : ""),
-                "Handicaps physiques: " + (document.getElementById('handicaps_physiques').checked ? "Oui" : "Non") + 
-                (document.getElementById('details_handicaps_physiques').value ? ", Détails: " + document.getElementById('details_handicaps_physiques').value : ""),
-                "Handicaps sensoriels: " + (document.getElementById('handicaps_sensoriels').checked ? "Oui" : "Non") + 
-                (document.getElementById('details_handicaps_sensoriels').value ? ", Détails: " + document.getElementById('details_handicaps_sensoriels').value : ""),
-                "Complexité du régime posologique: " + (document.getElementById('complexite_regime').checked ? "Oui" : "Non") + 
-                (document.getElementById('details_complexite_regime').value ? ", Détails: " + document.getElementById('details_complexite_regime').value : ""),
-                "Degré de danger envers la situation: " + (document.getElementById('danger_situation').checked ? "Oui" : "Non") + 
-                (document.getElementById('details_danger_situation').value ? ", Détails: " + document.getElementById('details_danger_situation').value : ""),
-            ];
-            justifications.forEach(item => addText(item));
-
-            // Autres informations
-            addText("Assurances: " + document.getElementById('assurances').value);
-            addText("Médecin de famille: " + document.getElementById('medecin_famille').value);
-            addText("Téléphone: " + document.getElementById('medecin_tel').value);
-            addText("Créatinine: " + document.getElementById('creatinine').value);
-            addText("Poids: " + document.getElementById('weight').value + " kg");
-            addText("Taille: " + document.getElementById('height').value + " cm");
-            addText("Fonction rénale (GFR estimé): " + document.getElementById('gfr').value);
-            addText("Autres laboratoires: " + document.getElementById('autres_laboratoires').value);
-
-            // Habitudes de consommation
-            addText("Habitudes de consommation:");
-            const habitudes = [
-                "Alcool: " + (document.getElementById('alcool').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('alcool_quantite').value,
-                "Tabac: " + (document.getElementById('tabac').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('tabac_quantite').value,
-                "Drogues: " + (document.getElementById('drogue').checked ? "Oui" : "Non") + ", Détails: " + document.getElementById('drogue_details').value,
-                "Café: " + (document.getElementById('cafe').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('cafe_quantite').value,
-            ];
-            habitudes.forEach(item => addText(item));
-
-            // Classes de médicaments
-            addText("Classes de médicaments utilisés:");
-            const medicaments = [
-                "Antihypertenseurs: " + (document.getElementById('antihypertenseurs').checked ? "Oui" : "Non"),
-                "Antidiabétiques: " + (document.getElementById('antidiabetiques').checked ? "Oui" : "Non"),
-                "Antidépresseurs: " + (document.getElementById('antidepresseurs').checked ? "Oui" : "Non"),
-                "Anticoagulants: " + (document.getElementById('anticoagulants').checked ? "Oui" : "Non"),
-                "Anti-inflammatoires: " + (document.getElementById('antiinflammatoires').checked ? "Oui" : "Non"),
-                "Hormones: " + (document.getElementById('hormones').checked ? "Oui" : "Non"),
-                "Dyslipidémie: " + (document.getElementById('dyslipidemie').checked ? "Oui" : "Non"),
-                "IPP: " + (document.getElementById('ipp').checked ? "Oui" : "Non"),
-                "Agents biologiques: " + (document.getElementById('biologiques').checked ? "Oui" : "Non"),
-                "Immunomodulateurs: " + (document.getElementById('immunomodulateurs').checked ? "Oui" : "Non"),
-                "Agents pour l'ostéoporose: " + (document.getElementById('osteoporose').checked ? "Oui" : "Non"),
-                "Opioïdes: " + (document.getElementById('opioides').checked ? "Oui" : "Non"),
-                "Pompes (asthme/MPOC): " + (document.getElementById('pompe').checked ? "Oui" : "Non"),
-            ];
-            medicaments.forEach(item => addText(item));
-
-            // Insuffisance hépatique
-            addText("Insuffisance hépatique: " + document.getElementById('insuffisance_hepatique').value);
-
-            // Décision
-            addText("Décision:");
-            const decision = [
-                "Aucune intervention: " + (document.getElementById('decider_aucune').checked ? "Oui" : "Non"),
-                "Retirer un médicament: " + (document.getElementById('decider_retirer').checked ? "Oui" : "Non"),
-                "Modifier un médicament: " + (document.getElementById('decider_modifier').checked ? "Oui" : "Non"),
-                "Ajouter un médicament: " + (document.getElementById('decider_ajouter').checked ? "Oui" : "Non"),
-                "Détails: " + document.getElementById('details_decision').value
-            ];
-            decision.forEach(item => addText(item));
-
-            doc.save("questionnaire.pdf");
-        }
-    </script>
-</body>
-</html>
+        // Fonction pour formater la date
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${
