@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire de Révision de Pilulier en Pharmacie</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: left;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            margin-right: 10px;
+        }
+        input, select, textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .reset-btn {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Questionnaire de Révision de Pilulier en Pharmacie</h1>
+
+    <!-- Bouton de réinitialisation -->
+    <div class="reset-btn">
+        <button type="button" onclick="resetForm()">Réinitialiser les réponses</button>
+    </div>
+
+    <form id="form">
+        <!-- Date du jour -->
+        <div class="section">
+            <label for="date">Date du jour :</label>
+            <input type="date" id="date" name="date">
+        </div>
+
+        <!-- Âge -->
+        <div class="section">
+            <label for="age">Âge :</label>
+            <input type="number" id="age" name="age" min="0">
+        </div>
+
+        <!-- Risque Vigie -->
+        <div class="section">
+            <label for="risque_vigie">Risque selon l'approche Vigie :</label>
+            <select id="risque_vigie" name="risque_vigie">
+                <option value="vert">Vert</option>
+                <option value="jaune">Jaune</option>
+                <option value="rouge">Rouge</option>
+            </select>
+        </div>
+
+        <!-- Justification Pilulier -->
+        <div class="section">
+            <h3>1. Justification de la mise en place d’un pilulier :</h3>
+            <label><input type="checkbox" id="problemes_cognitifs" name="justification" value="Problèmes cognitifs"> Problèmes cognitifs</label>
+            <input type="text" id="details_problemes_cognitifs" name="details_problemes_cognitifs" placeholder="Précisez">
+
+            <label><input type="checkbox" id="handicaps_physiques" name="justification" value="Handicaps physiques"> Handicaps physiques</label>
+            <input type="text" id="details_handicaps_physiques" name="details_handicaps_physiques" placeholder="Précisez">
+
+            <label><input type="checkbox" id="handicaps_sensoriels" name="justification" value="Handicaps sensoriels"> Handicaps sensoriels</label>
+            <input type="text" id="details_handicaps_sensoriels" name="details_handicaps_sensoriels" placeholder="Précisez">
+
+            <label><input type="checkbox" id="complexite_regime" name="justification" value="Complexité du régime posologique"> Complexité du régime posologique</label>
+            <input type="text" id="details_complexite_regime" name="details_complexite_regime" placeholder="Précisez">
+
+            <label><input type="checkbox" id="danger_situation" name="justification" value="Degré de danger envers la situation"> Degré de danger envers la situation</label>
+            <input type="text" id="details_danger_situation" name="details_danger_situation" placeholder="Précisez">
+        </div>
+
+        <!-- Assurances -->
+        <div class="section">
+            <label for="assurances">2. Assurances :</label>
+            <select id="assurances" name="assurances">
+                <option value="RAMQ">RAMQ</option>
+                <option value="Privé">Privé</option>
+            </select>
+        </div>
+
+        <!-- Médecin de famille -->
+        <div class="section">
+            <label for="medecin_famille">3. Médecin de famille :</label>
+            <input type="text" id="medecin_famille" name="medecin_famille" placeholder="Nom">
+            <input type="tel" id="medecin_tel" name="medecin_tel" placeholder="Téléphone">
+        </div>
+
+        <!-- Possibilité de PEC -->
+        <div class="section">
+            <h3>4. Possibilité de PEC :</h3>
+            <label><input type="radio" id="pec_oui" name="pec" value="Oui"> Oui</label>
+            <label><input type="radio" id="pec_non" name="pec" value="Non"> Non</label>
+
+            <div class="section">
+                <label for="pathologie">Choisir la pathologie :</label>
+                <select id="pathologie" name="pathologie">
+                    <option value="Diabète">Diabète</option>
+                    <option value="HTA">HTA</option>
+                    <option value="Cholesterol">Cholesterol</option>
+                    <option value="Hypothyroidie">Hypothyroidie</option>
+                    <option value="Douleur">Douleur</option>
+                    <option value="Migraine">Migraine</option>
+                    <option value="Asthme">Asthme</option>
+                    <option value="MPOC">MPOC</option>
+                </select>
+            </div>
+
+            <label for="resultat_cible">Résultat pour déterminer que la cible n'est pas atteinte :</label>
+            <input type="text" id="resultat_cible" name="resultat_cible">
+        </div>
+
+        <!-- Révision de la Vaccination -->
+        <div class="section">
+            <h3>5. Révision de la Vaccination :</h3>
+            <label for="vaccination-status">Statut de Vaccination :</label>
+            <select id="vaccination-status" name="vaccination-status">
+                <option value="completed">Complétée</option>
+                <option value="pending">En attente</option>
+                <option value="not-vaccinated">Non vacciné</option>
+            </select>
+
+            <label for="vaccination-notes">Remarques :</label>
+            <textarea id="vaccination-notes" name="vaccination-notes" rows="4" cols="50"></textarea>
+        </div>
+
+        <!-- Habitudes de consommation -->
+        <div class="section">
+            <h3>6. Habitudes de consommation :</h3>
+            <label><input type="checkbox" id="alcool" name="habitudes" value="Alcool"> Alcool</label>
+            <input type="text" id="alcool_quantite" name="alcool_quantite" placeholder="Quantité par semaine">
+
+            <label><input type="checkbox" id="tabac" name="habitudes" value="Tabac"> Tabac</label>
+            <input type="text" id="tabac_quantite" name="tabac_quantite" placeholder="Quantité par jour">
+
+            <label><input type="checkbox" id="drogue" name="habitudes" value="Drogues"> Drogues</label>
+            <input type="text" id="drogue_details" name="drogue_details" placeholder="Type et fréquence">
+
+            <label><input type="checkbox" id="cafe" name="habitudes" value="Café"> Café</label>
+            <input type="text" id="cafe_quantite" name="cafe_quantite" placeholder="Tasses par jour">
+        </div>
+
+        <!-- Classes de médicaments utilisés -->
+        <div class="section">
+            <h3>7. Classes de médicaments utilisés :</h3>
+            <label><input type="checkbox" id="antihypertenseurs" name="medicaments" value="Antihypertenseurs" onclick="updateLabResults()"> Antihypertenseurs</label>
+            <label><input type="checkbox" id="antidiabetiques" name="medicaments" value="Antidiabétiques" onclick="updateLabResults()"> Antidiabétiques</label>
+            <label><input type="checkbox" id="antidepresseurs" name="medicaments" value="Antidépresseurs" onclick="updateLabResults()"> Antidépresseurs</label>
+            <label><input type="checkbox" id="anticoagulants" name="medicaments" value="Anticoagulants" onclick="updateLabResults()"> Anticoagulants</label>
+            <label><input type="checkbox" id="antiinflammatoires" name="medicaments" value="Anti-inflammatoires" onclick="updateLabResults()"> Anti-inflammatoires</label>
+            <label><input type="checkbox" id="hormones" name="medicaments" value="Hormones" onclick="updateLabResults()"> Hormones</label>
+            <label><input type="checkbox" id="dyslipidemie" name="medicaments" value="Dyslipidémie" onclick="updateLabResults()"> Dyslipidémie</label>
+            <label><input type="checkbox" id="ipp" name="medicaments" value="IPP" onclick="updateLabResults()"> IPP</label>
+            <label><input type="checkbox" id="biologiques" name="medicaments" value="Agents biologiques" onclick="updateLabResults()"> Agents biologiques</label>
+            <label><input type="checkbox" id="immunomodulateurs" name="medicaments" value="Immunomodulateurs" onclick="updateLabResults()"> Immunomodulateurs</label>
+            <label><input type="checkbox" id="osteoporose" name="medicaments" value="Agents pour l'ostéoporose" onclick="updateLabResults()"> Agents pour l'ostéoporose</label>
+            <label><input type="checkbox" id="opioides" name="medicaments" value="Opioïdes" onclick="updateLabResults()"> Opioïdes</label>
+            <label><input type="checkbox" id="pompe" name="medicaments" value="Pompes (asthme/MPOC)" onclick="updateLabResults()"> Pompes (asthme/MPOC)</label>
+        </div>
+
+        <!-- Résultats de laboratoires importants -->
+        <div class="section">
+            <h3>8. Résultats de laboratoires importants :</h3>
+            <label for="creatinine">Créatinine :</label>
+            <input type="text" id="creatinine" name="creatinine" placeholder="Valeur de créatinine">
+
+            <label for="weight">Poids :</label>
+            <input type="text" id="weight" name="weight" placeholder="Poids en kg">
+
+            <label for="height">Taille :</label>
+            <input type="text" id="height" name="height" placeholder="Taille en cm">
+
+            <label for="gfr">Fonction rénale (GFR estimé) :</label>
+            <input type="text" id="gfr" name="gfr" placeholder="GFR estimé">
+
+            <div id="lab-results">
+                <!-- Résultats dynamiques ajoutés ici -->
+            </div>
+            <label for="autres_laboratoires">Autres laboratoires importants :</label>
+            <input type="text" id="autres_laboratoires" name="autres_laboratoires">
+        </div>
+
+        <!-- Insuffisance hépatique -->
+        <div class="section">
+            <label for="insuffisance_hepatique">Insuffisance hépatique :</label>
+            <select id="insuffisance_hepatique" name="insuffisance_hepatique">
+                <option value="aucun">Aucun</option>
+                <option value="légère">Légère</option>
+                <option value="modérée">Modérée</option>
+                <option value="grave">Grave</option>
+            </select>
+        </div>
+
+        <!-- Décision -->
+        <div class="section">
+            <h3>9. Décision :</h3>
+            <label><input type="radio" id="decider_aucune" name="decision" value="Aucune intervention"> Aucune intervention</label>
+            <label><input type="radio" id="decider_retirer" name="decision" value="Retirer un médicament"> Retirer un médicament</label>
+            <label><input type="radio" id="decider_modifier" name="decision" value="Modifier un médicament"> Modifier un médicament</label>
+            <label><input type="radio" id="decider_ajouter" name="decision" value="Ajouter un médicament"> Ajouter un médicament</label>
+
+            <div class="section">
+                <label for="details_decision">Précisez :</label>
+                <textarea id="details_decision" name="details_decision" rows="4" placeholder="Indiquez les détails concernant la décision ici..."></textarea>
+            </div>
+        </div>
+
+        <!-- Bouton d'exportation PDF -->
+        <div class="button-container">
+            <button type="button" onclick="exportToPDF()">Exporter en PDF</button>
+        </div>
+    </form>
+
+    <script>
+        function updateLabResults() {
+            const labResults = document.getElementById('lab-results');
+            labResults.innerHTML = '';
+
+            if (document.getElementById('antihypertenseurs').checked) {
+                labResults.innerHTML += '<label for="sodium_potassium">Sodium et Potassium :</label><input type="text" id="sodium_potassium" name="sodium_potassium"><br>';
+            }
+            if (document.getElementById('antidiabetiques').checked) {
+                labResults.innerHTML += '<label for="hba1c">HbA1c :</label><input type="text" id="hba1c" name="hba1c"><br>';
+                labResults.innerHTML += '<label for="vitamine_b12">Vitamine B12 :</label><input type="text" id="vitamine_b12" name="vitamine_b12"><br>';
+            }
+            if (document.getElementById('antidepresseurs').checked) {
+                labResults.innerHTML += '<label for="sodium">Sodium :</label><input type="text" id="sodium" name="sodium"><br>';
+            }
+            if (document.getElementById('anticoagulants').checked) {
+                // Pas de laboratoires spécifiques
+            }
+            if (document.getElementById('antiinflammatoires').checked) {
+                // Pas de laboratoires spécifiques
+            }
+            if (document.getElementById('hormones').checked) {
+                // Pas de laboratoires spécifiques
+            }
+            if (document.getElementById('dyslipidemie').checked) {
+                labResults.innerHTML += '<label for="ldl">LDL :</label><input type="text" id="ldl" name="ldl"><br>';
+                labResults.innerHTML += '<label for="apo_b">Apo-B :</label><input type="text" id="apo_b" name="apo_b"><br>';
+            }
+            if (document.getElementById('ipp').checked) {
+                labResults.innerHTML += '<label for="magnesium">Magnésium :</label><input type="text" id="magnesium" name="magnesium"><br>';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('form').reset();
+            document.getElementById('lab-results').innerHTML = '';
+            document.getElementById('gfr').value = '';
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let yOffset = 10;
+
+            doc.setFontSize(16);
+            doc.text("Questionnaire de Révision de Pilulier en Pharmacie", 20, yOffset);
+            doc.setFontSize(12);
+            yOffset += 10;
+
+            const addText = (text) => {
+                if (yOffset >= 280) {
+                    doc.addPage();
+                    yOffset = 10;
+                }
+                doc.text(text, 20, yOffset);
+                yOffset += 10;
+            };
+
+            // Remplissage des informations
+            addText("Date du jour: " + document.getElementById('date').value);
+            addText("Âge: " + document.getElementById('age').value);
+            addText("Risque selon l'approche Vigie: " + document.getElementById('risque_vigie').value);
+            
+            // Justifications
+            addText("Justifications de la mise en place d’un pilulier:");
+            const justifications = [
+                "Problèmes cognitifs: " + (document.getElementById('problemes_cognitifs').checked ? "Oui" : "Non") + 
+                (document.getElementById('details_problemes_cognitifs').value ? ", Détails: " + document.getElementById('details_problemes_cognitifs').value : ""),
+                "Handicaps physiques: " + (document.getElementById('handicaps_physiques').checked ? "Oui" : "Non") + 
+                (document.getElementById('details_handicaps_physiques').value ? ", Détails: " + document.getElementById('details_handicaps_physiques').value : ""),
+                "Handicaps sensoriels: " + (document.getElementById('handicaps_sensoriels').checked ? "Oui" : "Non") + 
+                (document.getElementById('details_handicaps_sensoriels').value ? ", Détails: " + document.getElementById('details_handicaps_sensoriels').value : ""),
+                "Complexité du régime posologique: " + (document.getElementById('complexite_regime').checked ? "Oui" : "Non") + 
+                (document.getElementById('details_complexite_regime').value ? ", Détails: " + document.getElementById('details_complexite_regime').value : ""),
+                "Degré de danger envers la situation: " + (document.getElementById('danger_situation').checked ? "Oui" : "Non") + 
+                (document.getElementById('details_danger_situation').value ? ", Détails: " + document.getElementById('details_danger_situation').value : ""),
+            ];
+            justifications.forEach(item => addText(item));
+
+            // Autres informations
+            addText("Assurances: " + document.getElementById('assurances').value);
+            addText("Médecin de famille: " + document.getElementById('medecin_famille').value);
+            addText("Téléphone: " + document.getElementById('medecin_tel').value);
+            addText("Créatinine: " + document.getElementById('creatinine').value);
+            addText("Poids: " + document.getElementById('weight').value + " kg");
+            addText("Taille: " + document.getElementById('height').value + " cm");
+            addText("Fonction rénale (GFR estimé): " + document.getElementById('gfr').value);
+            addText("Autres laboratoires: " + document.getElementById('autres_laboratoires').value);
+
+            // Habitudes de consommation
+            addText("Habitudes de consommation:");
+            const habitudes = [
+                "Alcool: " + (document.getElementById('alcool').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('alcool_quantite').value,
+                "Tabac: " + (document.getElementById('tabac').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('tabac_quantite').value,
+                "Drogues: " + (document.getElementById('drogue').checked ? "Oui" : "Non") + ", Détails: " + document.getElementById('drogue_details').value,
+                "Café: " + (document.getElementById('cafe').checked ? "Oui" : "Non") + ", Quantité: " + document.getElementById('cafe_quantite').value,
+            ];
+            habitudes.forEach(item => addText(item));
+
+            // Classes de médicaments
+            addText("Classes de médicaments utilisés:");
+            const medicaments = [
+                "Antihypertenseurs: " + (document.getElementById('antihypertenseurs').checked ? "Oui" : "Non"),
+                "Antidiabétiques: " + (document.getElementById('antidiabetiques').checked ? "Oui" : "Non"),
+                "Antidépresseurs: " + (document.getElementById('antidepresseurs').checked ? "Oui" : "Non"),
+                "Anticoagulants: " + (document.getElementById('anticoagulants').checked ? "Oui" : "Non"),
+                "Anti-inflammatoires: " + (document.getElementById('antiinflammatoires').checked ? "Oui" : "Non"),
+                "Hormones: " + (document.getElementById('hormones').checked ? "Oui" : "Non"),
+                "Dyslipidémie: " + (document.getElementById('dyslipidemie').checked ? "Oui" : "Non"),
+                "IPP: " + (document.getElementById('ipp').checked ? "Oui" : "Non"),
+                "Agents biologiques: " + (document.getElementById('biologiques').checked ? "Oui" : "Non"),
+                "Immunomodulateurs: " + (document.getElementById('immunomodulateurs').checked ? "Oui" : "Non"),
+                "Agents pour l'ostéoporose: " + (document.getElementById('osteoporose').checked ? "Oui" : "Non"),
+                "Opioïdes: " + (document.getElementById('opioides').checked ? "Oui" : "Non"),
+                "Pompes (asthme/MPOC): " + (document.getElementById('pompe').checked ? "Oui" : "Non"),
+            ];
+            medicaments.forEach(item => addText(item));
+
+            // Insuffisance hépatique
+            addText("Insuffisance hépatique: " + document.getElementById('insuffisance_hepatique').value);
+
+            // Décision
+            addText("Décision:");
+            const decision = [
+                "Aucune intervention: " + (document.getElementById('decider_aucune').checked ? "Oui" : "Non"),
+                "Retirer un médicament: " + (document.getElementById('decider_retirer').checked ? "Oui" : "Non"),
+                "Modifier un médicament: " + (document.getElementById('decider_modifier').checked ? "Oui" : "Non"),
+                "Ajouter un médicament: " + (document.getElementById('decider_ajouter').checked ? "Oui" : "Non"),
+                "Détails: " + document.getElementById('details_decision').value
+            ];
+            decision.forEach(item => addText(item));
+
+            doc.save("questionnaire.pdf");
+        }
+    </script>
+</body>
+</html>
