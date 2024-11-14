@@ -1,274 +1,165 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionnaire </title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: left;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        form {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: #007BFF;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="checkbox"], input[type="radio"] {
-            margin-right: 10px;
-        }
-        input, select, textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border-color 0.3s;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: #007BFF;
-            outline: none;
-        }
-        .button-container {
-            text-align: center;
-        }
-        .reset-btn {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <h1>Questionnaire de Révision de Pilulier en Pharmacie</h1>
+import React from 'react';
 
-    <!-- Bouton de réinitialisation -->
-    <div class="reset-btn">
-        <button type="button" onclick="resetForm()">Réinitialiser les réponses</button>
+const CalendarView = () => {
+  const weeks = [
+    {
+      weekNum: 1,
+      days: [
+        { date: 8, month: "FÉV", content: { type: "vol", detail: "YUL → RAK", time: "19:05", icon: "✈️" }},
+        { date: 9, month: "FÉV", content: { type: "double", 
+          morning: { type: "vol", detail: "Arrivée RAK", time: "08:00", icon: "✈️" },
+          afternoon: { type: "sejour", detail: "Marrakech", icon: "🏰" }}},
+        { date: 10, month: "FÉV", content: { type: "sejour", detail: "Marrakech", icon: "🏰" }},
+        { date: 11, month: "FÉV", content: { type: "double",
+          morning: { type: "sejour", detail: "Marrakech", icon: "🏰" },
+          afternoon: { type: "vol", detail: "RAK → ACE", time: "12:00", icon: "✈️" }}},
+        { date: 12, month: "FÉV", content: { type: "sejour", detail: "Lanzarote", icon: "🌋" }},
+        { date: 13, month: "FÉV", content: { type: "double",
+          morning: { type: "sejour", detail: "Lanzarote", icon: "🌋" },
+          afternoon: { type: "ferry", detail: "ACE → LPA", time: "11:30", icon: "⛴️" }}},
+        { date: 14, month: "FÉV", content: { type: "sejour", detail: "Gran Canaria", icon: "🏖️" }}
+      ]
+    },
+    {
+      weekNum: 2,
+      days: [
+        { date: 15, month: "FÉV", content: { type: "sejour", detail: "Gran Canaria", icon: "🏖️" }},
+        { date: 16, month: "FÉV", content: { type: "sejour", detail: "Gran Canaria", icon: "🏖️" }},
+        { date: 17, month: "FÉV", content: { type: "double",
+          morning: { type: "ferry", detail: "LPA → TFS", time: "10:00", icon: "⛴️" },
+          afternoon: { type: "sejour", detail: "Tenerife", icon: "🗼" }}},
+        { date: 18, month: "FÉV", content: { type: "sejour", detail: "Tenerife", icon: "🗼" }},
+        { date: 19, month: "FÉV", content: { type: "sejour", detail: "Tenerife", icon: "🗼" }},
+        { date: 20, month: "FÉV", content: { type: "sejour", detail: "Tenerife", icon: "🗼" }},
+        { date: 21, month: "FÉV", content: { type: "double",
+          morning: { type: "sejour", detail: "Tenerife", icon: "🗼" },
+          afternoon: { type: "vol", detail: "TFS → RAK", time: "20:20", icon: "✈️" }}}
+      ]
+    },
+    {
+      weekNum: 3,
+      days: [
+        { date: 22, month: "FÉV", content: { type: "sejour", detail: "Marrakech", icon: "🏰" }},
+        { date: 23, month: "FÉV", content: { type: "vol", detail: "RAK → YUL", time: "09:45", icon: "✈️" }},
+        { date: 24, month: "FÉV", content: null },
+        { date: 25, month: "FÉV", content: null },
+        { date: 26, month: "FÉV", content: null },
+        { date: 27, month: "FÉV", content: null },
+        { date: 28, month: "FÉV", content: null }
+      ]
+    }
+  ];
+
+  const CalendarDayContent = ({ content }) => {
+    if (!content) return null;
+
+    const getBackgroundColor = (type) => {
+      switch (type) {
+        case 'vol':
+          return 'bg-blue-100';
+        case 'ferry':
+          return 'bg-green-100';
+        case 'sejour':
+          return 'bg-yellow-50';
+        default:
+          return 'bg-gray-50';
+      }
+    };
+
+    if (content.type === 'double') {
+      return (
+        <div className="h-full flex flex-col">
+          <div className={`flex-1 p-1 ${getBackgroundColor(content.morning.type)} border-b`}>
+            <div className="text-sm font-medium">{content.morning.icon} {content.morning.time || ''}</div>
+            <div className="text-xs">{content.morning.detail}</div>
+          </div>
+          <div className={`flex-1 p-1 ${getBackgroundColor(content.afternoon.type)}`}>
+            <div className="text-sm font-medium">{content.afternoon.icon} {content.afternoon.time || ''}</div>
+            <div className="text-xs">{content.afternoon.detail}</div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={`h-full p-2 ${getBackgroundColor(content.type)}`}>
+        <div className="text-sm font-medium">{content.icon} {content.time || ''}</div>
+        <div className="text-xs">{content.detail}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Calendrier Itinéraire 1: Maroc puis Canaries</h2>
+      
+      <div className="mb-4">
+        <div className="flex gap-4 items-center">
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-blue-100 rounded mr-2"></div>
+            <span>Vols</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-green-100 rounded mr-2"></div>
+            <span>Ferries</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-yellow-50 rounded mr-2"></div>
+            <span>Séjours</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="border rounded-lg overflow-hidden bg-white">
+        <div className="grid grid-cols-7 gap-px bg-gray-200">
+          <div className="bg-gray-100 p-2 text-center font-medium">Lun</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Mar</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Mer</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Jeu</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Ven</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Sam</div>
+          <div className="bg-gray-100 p-2 text-center font-medium">Dim</div>
+        </div>
+
+        {weeks.map((week, weekIndex) => (
+          <div key={week.weekNum} className="grid grid-cols-7 gap-px bg-gray-200">
+            {week.days.map((day, dayIndex) => (
+              <div key={`${week.weekNum}-${dayIndex}`} className="bg-white min-h-[100px]">
+                <div className="p-1 border-b">
+                  <span className="font-bold">{day.date}</span>
+                  <span className="text-xs text-gray-600 ml-1">{day.month}</span>
+                </div>
+                <CalendarDayContent content={day.content} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 p-4 bg-white rounded-lg border">
+        <h3 className="font-bold mb-2">Résumé du voyage</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h4 className="font-medium">Durées de séjour</h4>
+            <ul className="text-sm">
+              <li>🏰 Marrakech: 2.5 + 1.5 jours</li>
+              <li>🌋 Lanzarote: 2 jours</li>
+              <li>🏖️ Gran Canaria: 4 jours</li>
+              <li>🗼 Tenerife: 4 jours</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium">Transports</h4>
+            <ul className="text-sm">
+              <li>✈️ 4 vols</li>
+              <li>⛴️ 2 ferries</li>
+              <li>🕒 Temps total: ~13h</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+  );
+};
 
-    <form id="form">
-        <!-- Date du jour -->
-        <div class="section">
-            <label for="date">Date du jour :</label>
-            <input type="text" id="date" name="date" readonly>
-        </div>
-
-        <!-- Âge -->
-        <div class="section">
-            <label for="age">Âge :</label>
-            <input type="number" id="age" name="age" min="0">
-        </div>
-
-        <!-- Risque Vigie -->
-        <div class="section">
-            <label for="risque_vigie">Risque selon l'approche Vigie :</label>
-            <select id="risque_vigie" name="risque_vigie">
-                <option value="vert">Vert</option>
-                <option value="jaune">Jaune</option>
-                <option value="rouge">Rouge</option>
-            </select>
-        </div>
-
-        <!-- Justification Pilulier -->
-        <div class="section">
-            <h3>1. Justification de la mise en place d'un pilulier :</h3>
-            <label><input type="checkbox" id="problemes_cognitifs" name="justification" value="Problèmes cognitifs"> Problèmes cognitifs</label>
-            <input type="text" id="details_problemes_cognitifs" name="details_problemes_cognitifs" placeholder="Précisez">
-
-            <label><input type="checkbox" id="handicaps_physiques" name="justification" value="Handicaps physiques"> Handicaps physiques</label>
-            <input type="text" id="details_handicaps_physiques" name="details_handicaps_physiques" placeholder="Précisez">
-
-            <label><input type="checkbox" id="handicaps_sensoriels" name="justification" value="Handicaps sensoriels"> Handicaps sensoriels</label>
-            <input type="text" id="details_handicaps_sensoriels" name="details_handicaps_sensoriels" placeholder="Précisez">
-
-            <label><input type="checkbox" id="complexite_regime" name="justification" value="Complexité du régime posologique"> Complexité du régime posologique</label>
-            <input type="text" id="details_complexite_regime" name="details_complexite_regime" placeholder="Précisez">
-
-            <label><input type="checkbox" id="danger_situation" name="justification" value="Degré de danger envers la situation"> Degré de danger envers la situation</label>
-            <input type="text" id="details_danger_situation" name="details_danger_situation" placeholder="Précisez">
-        </div>
-
-        <!-- Assurances -->
-        <div class="section">
-            <label for="assurances">2. Assurances :</label>
-            <select id="assurances" name="assurances">
-                <option value="RAMQ">RAMQ</option>
-                <option value="Privé">Privé</option>
-            </select>
-        </div>
-
-        <!-- Médecin de famille -->
-        <div class="section">
-            <label for="medecin_famille">3. Médecin de famille :</label>
-            <input type="text" id="medecin_famille" name="medecin_famille" placeholder="Nom">
-            <input type="tel" id="medecin_tel" name="medecin_tel" placeholder="Téléphone">
-        </div>
-
-        <!-- Possibilité de PEC -->
-        <div class="section">
-            <h3>4. Possibilité de PEC :</h3>
-            <label><input type="radio" id="pec_oui" name="pec" value="Oui"> Oui</label>
-            <label><input type="radio" id="pec_non" name="pec" value="Non"> Non</label>
-
-            <div class="section">
-                <label for="pathologie">Choisir la pathologie :</label>
-                <select id="pathologie" name="pathologie">
-                    <option value="Diabète">Diabète</option>
-                    <option value="HTA">HTA</option>
-                    <option value="Cholesterol">Cholesterol</option>
-                    <option value="Hypothyroidie">Hypothyroidie</option>
-                    <option value="Douleur">Douleur</option>
-                    <option value="Migraine">Migraine</option>
-                    <option value="Asthme">Asthme</option>
-                    <option value="MPOC">MPOC</option>
-                </select>
-            </div>
-
-            <label for="resultat_cible">Résultat pour déterminer que la cible n'est pas atteinte :</label>
-            <input type="text" id="resultat_cible" name="resultat_cible">
-        </div>
-
-        <!-- Révision de la Vaccination -->
-        <div class="section">
-            <h3>5. Révision de la Vaccination :</h3>
-            <label for="vaccination-status">Statut de Vaccination :</label>
-            <select id="vaccination-status" name="vaccination-status">
-                <option value="completed">Complétée</option>
-                <option value="pending">En attente</option>
-                <option value="not-vaccinated">Non vacciné</option>
-            </select>
-
-            <label for="vaccination-notes">Remarques :</label>
-            <textarea id="vaccination-notes" name="vaccination-notes" rows="4" cols="50"></textarea>
-        </div>
-
-        <!-- Habitudes de consommation -->
-        <div class="section">
-            <h3>6. Habitudes de consommation :</h3>
-            <label><input type="checkbox" id="alcool" name="habitudes" value="Alcool"> Alcool</label>
-            <input type="text" id="alcool_quantite" name="alcool_quantite" placeholder="Quantité par semaine">
-
-            <label><input type="checkbox" id="tabac" name="habitudes" value="Tabac"> Tabac</label>
-            <input type="text" id="tabac_quantite" name="tabac_quantite" placeholder="Quantité par jour">
-
-            <label><input type="checkbox" id="drogue" name="habitudes" value="Drogues"> Drogues</label>
-            <input type="text" id="drogue_details" name="drogue_details" placeholder="Type et fréquence">
-
-            <label><input type="checkbox" id="cafe" name="habitudes" value="Café"> Café</label>
-            <input type="text" id="cafe_quantite" name="cafe_quantite" placeholder="Tasses par jour">
-        </div>
-
-        <!-- Classes de médicaments utilisés -->
-        <div class="section">
-            <h3>7. Classes de médicaments utilisés :</h3>
-            <label><input type="checkbox" id="antihypertenseurs" name="medicaments" value="Antihypertenseurs" onclick="updateLabResults()"> Antihypertenseurs</label>
-            <label><input type="checkbox" id="antidiabetiques" name="medicaments" value="Antidiabétiques" onclick="updateLabResults()"> Antidiabétiques</label>
-            <label><input type="checkbox" id="antidepresseurs" name="medicaments" value="Antidépresseurs" onclick="updateLabResults()"> Antidépresseurs</label>
-            <label><input type="checkbox" id="anticoagulants" name="medicaments" value="Anticoagulants" onclick="updateLabResults()"> Anticoagulants</label>
-            <label><input type="checkbox" id="antiinflammatoires" name="medicaments" value="Anti-inflammatoires" onclick="updateLabResults()"> Anti-inflammatoires</label>
-            <label><input type="checkbox" id="hormones" name="medicaments" value="Hormones" onclick="updateLabResults()"> Hormones</label>
-            <label><input type="checkbox" id="dyslipidemie" name="medicaments" value="Dyslipidémie" onclick="updateLabResults()"> Dyslipidémie</label>
-            <label><input type="checkbox" id="ipp" name="medicaments" value="IPP" onclick="updateLabResults()"> IPP</label>
-            <label><input type="checkbox" id="biologiques" name="medicaments" value="Agents biologiques" onclick="updateLabResults()"> Agents biologiques</label>
-            <label><input type="checkbox" id="immunomodulateurs" name="medicaments" value="Immunomodulateurs" onclick="updateLabResults()"> Immunomodulateurs</label>
-            <label><input type="checkbox" id="osteoporose" name="medicaments" value="Agents pour l'ostéoporose" onclick="updateLabResults()"> Agents pour l'ostéoporose</label>
-            <label><input type="checkbox" id="opioides" name="medicaments" value="Opioïdes" onclick="updateLabResults()"> Opioïdes</label>
-            <label><input type="checkbox" id="pompe" name="medicaments" value="Pompes (asthme/MPOC)" onclick="updateLabResults()"> Pompes (asthme/MPOC)</label>
-        </div>
-
-        <!-- Résultats de laboratoires importants -->
-        <div class="section">
-            <h3>8. Résultats de laboratoires importants :</h3>
-            <label for="creatinine">Créatinine :</label>
-            <input type="text" id="creatinine" name="creatinine" placeholder="Valeur de créatinine">
-
-            <label for="weight">Poids :</label>
-            <input type="text" id="weight" name="weight" placeholder="Poids en kg">
-
-            <label for="height">Taille :</label>
-            <input type="text" id="height" name="height" placeholder="Taille en cm">
-
-            <label for="gfr">Fonction rénale (GFR estimé) :</label>
-            <input type="text" id="gfr" name="gfr" placeholder="GFR estimé">
-
-            <div id="lab-results">
-                <!-- Résultats dynamiques ajoutés ici -->
-            </div>
-            <label for="autres_laboratoires">Autres laboratoires importants :</label>
-            <input type="text" id="autres_laboratoires" name="autres_laboratoires">
-        </div>
-
-        <!-- Insuffisance hépatique -->
-        <div class="section">
-            <label for="insuffisance_hepatique">Insuffisance hépatique :</label>
-            <select id="insuffisance_hepatique" name="insuffisance_hepatique">
-                <option value="aucun">Aucun</option>
-                <option value="légère">Légère</option>
-                <option value="modérée">Modérée</option>
-                <option value="grave">Grave</option>
-            </select>
-        </div>
-
-        <!-- Décision -->
-        <div class="section">
-            <h3>9. Décision :</h3>
-            <label><input type="radio" id="decider_aucune" name="decision" value="Aucune intervention"> Aucune intervention</label>
-            <label><input type="radio" id="decider_retirer" name="decision" value="Retirer un médicament"> Retirer un médicament</label>
-            <label><input type="radio" id="decider_modifier" name="decision" value="Modifier un médicament"> Modifier un médicament</label>
-            <label><input type="radio" id="decider_ajouter" name="decision" value="Ajouter un médicament"> Ajouter un médicament</label>
-
-            <div class="section">
-                <label for="details_decision">Précisez :</label>
-                <textarea id="details_decision" name="details_decision" rows="4" placeholder="Indiquez les détails concernant la décision ici..."></textarea>
-            </div>
-        </div>
-
-        <!-- Bouton d'exportation PDF -->
-        <div class="button-container">
-            <button type="button" onclick="exportToPDF()">Exporter en PDF</button>
-        </div>
-    </form>
-
-    <script>
-        // Fonction pour formater la date
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${
+export default CalendarView;
